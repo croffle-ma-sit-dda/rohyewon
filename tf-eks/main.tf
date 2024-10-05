@@ -15,17 +15,17 @@ terraform {
 provider "aws" {}
 module "vpc" {
     source = "./modules/vpc"
-    name = "dev-vpc"
-    cidr = "10.0.0.0/16"
+    vpc_name = "dev-vpc"
+    vpc_cidr = "10.0.0.0/16"
 
 }
 
 module "yewon_eks" {
     source = "./modules/eks"
     cluster_name = "dev-cluster"
-    cluster_version = 1.2
-    vpc_id = module.yewon_vpc.vpc_id
-    private_subnets = module.yewon_vpc.private_subnets
+    cluster_version = 1.27
+    vpc_id = module.vpc.vpc_id
+    private_subnets = module.vpc.private_subnets
 }
 
 
