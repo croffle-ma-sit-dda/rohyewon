@@ -15,8 +15,8 @@ terraform {
 provider "aws" {}
 module "vpc" {
     source = "./modules/vpc"
-    #name = "dev-vpc"
-    #cidr = "10.0.0.0/16"
+    name = "dev-vpc"
+    cidr = "10.0.0.0/16"
 
 }
 
