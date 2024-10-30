@@ -35,20 +35,23 @@ module "eks_cluster" {
 
     cluster_addons = {
         coredns = {
-            most_recent = true
+            addon_version = "v1.10.1-eksbuild.11" # 1.28 과 동일한 버전 사용
+            resolve_conflicts = "PRESERVE"
         }
 
         kube-proxy = {
-            most_recent = true
+            addon_version = "v1.28.8-eksbuild.5" # 1.28 과 동일한 버전 사용
+            resolve_conflicts = "PRESERVE"
         }
 
         vpc-cni = {
-            most_recent = true
+            addon_version = "v1.18.3-eksbuild.1" # 변경(운영계와 동일)
+            resolve_conflicts = "PRESERVE"
         }
     }
 
     vpc_id = var.vpc_id
-    subnet_ids = var.private_subnets
+    subnet_ids = var.private_first
     manage_aws_auth_configmap = true
 
     eks_managed_node_groups = {
@@ -56,17 +59,17 @@ module "eks_cluster" {
             name = "yewon-ng"
             use_name_prefix = true      # 노드그룹 뒤에 랜덤한 값을 세팅하기 위해, 중복이름 생성을 막기 위함
 
-            subnet_ids = var.private_subnets
+            subnet_ids = var.private_first
 
-            min_size = 1
+            min_size = 2
             max_size = 2
-            desired_size = 1
+            desired_size = 2
 
             ami_id = data.aws_ami.yewon_eks_ami.id
             enable_bootstrap_user_data = true # 노드가 생성이 되었을 때 controlplane 과 통신이 되기 위해, bootstrap 에 userdata 가 필요함 
 
-            capacity_type = "ON_DEMAND"
             instance_type = ["t3.medium"]
+            capacity_type = "ON_DEMAND"
 
             create_iam_role = true
             iam_role_name = "yewon-ng-role"
